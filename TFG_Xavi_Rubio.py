@@ -84,6 +84,7 @@ for i in (rangB):
     eV=eigenvalues/q
     Egraf.append(eV[0])
 plt.plot(rangB,Egraf)
+plt.title ("E(k = 0)(eV) vs B(T)")
+plt.xlabel("B(T)")
+plt.ylabel("E(k = 0)(eV)")
 plt.show()
-     
-
