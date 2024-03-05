@@ -84,8 +84,8 @@ Hamilt =T+U #Hamiltoniano
 eigenvalues, eigenvectors = np.linalg.eigh(Hamilt) 
 Energy=eigenvalues.reshape((N,N,N))
 
-idx = Energy.argsort()[::-1]
-Esort = Energy[idx]
+idx = np.argsort(eigenvalues)
+Esort = eigenvalues[idx]
 EsorteV = Esort/q #Energia en eV
 vectors = eigenvectors[:,idx]
 print(EsorteV)
