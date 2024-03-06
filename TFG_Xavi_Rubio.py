@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #Definir posicions
 hbarr=6.626*10**(-34) 
 m0=9.11*10**(-31)
-rmass = 0.06
+rmass = 0.067
 L = 70 #Ang
 Lua = L*10**(-10) #en metros
 Lz= 10 #Ang
@@ -58,7 +58,7 @@ def Dz(a):
     for i in range(N):
         for j in range(N):
             if i == j:
-                Hz[i, j] = (hbarr**2 / (m0*rmass * a**2)) + potencial(i)  #Diagonal
+                Hz[i, j] = (hbarr**2 / (m0*rmass * a**2)) + potencial(Z[i])  #Diagonal
             elif abs(i - j) == 1:
                 Hz[i, j] = -(hbarr**2 / (m0*2 * rmass * a**2)) #Diagonals superior e inferior
     return Hz
