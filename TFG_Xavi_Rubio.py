@@ -13,7 +13,6 @@ Lzua = Lz*10**(-10) #en metros
 Vbarrier = 10 #eV
 V0 = Vbarrier * 1.6*10**(-19) # en Joules
 q=1.6*10**(-19) #Carga del electron en C
-imag = complex(0,1)
 N = 10 #Numero de puntos, hay que vigilar porque realmente se obtienen N^3 valores propies
 dx = 10*10**-10 #Distància entre puntos en x en m
 dy = 10*10**-10
@@ -71,14 +70,16 @@ def Vmagn(a,B):
         for j in range(N):
             if i == j:
                 V[i, j] = 1/(2 * rmass*m0)*((q*B*X[i])**2)  #Diagonal
-            elif abs(i - j) == 1:
-                V[i, j] = complex(0,2*hbarr*q*B*X[i]/(2*a)) #Diagonals superior e inferior
+            elif (i - j) == 1:
+                V[i, j] = complex(0,-2*hbarr*q*B*X[i]/(2*a)) #Diagonal superior 
+            elif (i - j) == -1:
+                V[i, j] = complex(0,2*hbarr*q*B*X[i]/(2*a)) #Diagonal inferior                
     return V
 
 Egraf = []
 for i in (rangB):
 #Tensor d'energia potencial n^3 x n^3
-    U= np.kron(np.kron(Vmagn(dx,i),I),I) +np.kron(np.kron(I,Vmagn(dy,i)),I) + np.kron(np.kron(I,I),Vmagn(dz,i))
+    U=np.kron(np.kron(I,I),Vmagn(dz,i))
     Hamilt =T+U #Hamiltoniano
     eigenvalues , eigenvectors = eigsh(Hamilt, k=3,which="SM")
     eV=eigenvalues/q
