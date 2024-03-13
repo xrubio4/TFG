@@ -5,25 +5,33 @@ import matplotlib.pyplot as plt
 #Definir posicions
 hbarr=6.626*10**(-34)
 m0=9.11*10**(-31)
-rmass = 0.06
-L = 70 #Ang
-Lua = L*10**(-10) #en metros
-Lz= 10 #Ang
-Lzua = Lz*10**(-10) #en metros
+rmass = 0.067
 Vbarrier = 10 #eV
 V0 = Vbarrier * 1.6*10**(-19) # en Joules
-q=1.6*10**(-19) #Carga del electron en C
-imag = complex(0,1)
-N = 10 #Numero de puntos, hay que vigilar porque realmente se obtienen N^3 valores propies
-dx = 10*10**-10 #Distancia entre puntos en x en m
-dy = 10*10**-10
-dz = 10*10**-10
+q=-1.6*10**(-19) #Carga del electron en C
+
+L = 552 #Ang (Valor encontrado en internet de pozo de AlGaAs/GaAs/AlGaAs)
+Lua = L*10**(-10) #en metros
+xylower = -Lua/2.0
+xyupper = Lua/2.0
+Lz = 119 #L pozo en Ang (Valor encontrado en internet de pozo de AlGaAs/GaAs/AlGaAs)
+Lzua = Lz*10**(-10) #en metros
+zlower = -Lua/2.0
+zupper = Lua/2.0 #Analizaremos la distancia Lua en Z, para analizar puntos dentro y fuera del pozo
+dx = 50*10**-10 #Distància entre puntos en x en m
+dy = 50*10**-10
+dz = 50*10**-10
+X = np.arange(xylower,xyupper+dx,dx)
+Y = np.arange(xylower,xyupper+dy,dy)
+Z = np.arange(zlower,zupper+dz,dz)
+
+
+N=len(X) #Numero de puntos, hay que vigilar porque realmente se obtienen N^3 valores propios
 
 ##CÓDIGO DEPENDENCIA CON EL ÁNGULO
 print("Introduce el valor del campo magn (B) en T:")
 B=float(input())
 Theta = np.linspace(0,np.pi,180)
-X,Y,Z= np.linspace(-Lua/2,Lua/2,N), np.linspace(-Lua/2,Lua/2,N), np.linspace(-Lua/2,Lua/2,N) #Para graficar y tambien para uso en el potencial
 
 I=np.identity(N) #Matriz identidad
 #Operadores
@@ -73,9 +81,9 @@ def Vmagnz(a,thet):
             if i == j:
                 V[i, j] = 1/(2 * rmass*m0)*((q*B*X[i])**2)  #Diagonal
             elif (i - j) == 1:
-                V[i, j] = complex(0,-2*hbarr*q*B*X[i]*np.cos(thet)/(2*a)) #Diagonal superior 
+                V[i, j] = complex(0,-2*hbarr*q*B*X[i]*np.cos(thet)/(2*a)) #Diagonal superior
             elif (i - j) == -1:
-                V[i, j] = complex(0,2*hbarr*q*B*X[i]*np.cos(thet)/(2*a)) #Diagonal inferior  
+                V[i, j] = complex(0,2*hbarr*q*B*X[i]*np.cos(thet)/(2*a)) #Diagonal inferior
     return V
 
 def Vmagny(a,thet):
@@ -87,19 +95,33 @@ def Vmagny(a,thet):
             elif (i - j) == 1:
                 P[i, j] = complex(0,2*hbarr*q*B*X[i]*np.sin(thet)/(2*a)) #Diagonals superior e inferior
             elif (i - j) == -1:
-                P[i, j] = complex(0,-2*hbarr*q*B*X[i]*np.sin(thet)/(2*a)) #Diagonals superior e inferior            
+                P[i, j] = complex(0,-2*hbarr*q*B*X[i]*np.sin(thet)/(2*a)) #Diagonals superior e inferior
     return P
 
-Egraf = []
+k0 = []
+k1 = []
+k2 = []
 for i in (Theta):
 #Tensor d'energia potencial n^3 x n^3
     U= np.kron(np.kron(I,Vmagny(dy,i)),I) + np.kron(np.kron(I,I),Vmagnz(dz,i))
     Hamilt =T+U #Hamiltoniano
-    eigenvalues , eigenvectors = eigsh(Hamilt, k=1,which="SM")
+    eigenvalues , eigenvectors = eigsh(Hamilt, k=3,which="SM")
     eV=eigenvalues/q
-    Egraf.append(eV[0])
-plt.plot(np.degrees(Theta),Egraf)
+    k0.append(eV[0])
+    k1.append(eV[1])
+    k2.append(eV[2])
+plt.plot(np.degrees(Theta),k0)
 plt.title ("E(k = 0)(eV) vs Theta(º)")
 plt.xlabel("Theta(º)")
 plt.ylabel("E(k = 0)(eV)")
+plt.show()
+plt.plot(np.degrees(Theta),k1)
+plt.title ("E(k = 1)(eV) vs Theta(º)")
+plt.xlabel("Theta(º)")
+plt.ylabel("E(k = 1)(eV)")
+plt.show()
+plt.plot(np.degrees(Theta),k2)
+plt.title ("E(k = 2)(eV) vs Theta(º)")
+plt.xlabel("Theta(º)")
+plt.ylabel("E(k = 2)(eV)")
 plt.show()
