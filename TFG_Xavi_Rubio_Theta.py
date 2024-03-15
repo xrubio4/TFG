@@ -3,10 +3,10 @@ from scipy.sparse.linalg import eigsh
 import matplotlib.pyplot as plt
 #Unidades sistema internacional
 #Definir posicions
-hbarr=6.626*10**(-34)
+hbarr=6.626*10**(-34)/(2*np.pi)
 m0=9.11*10**(-31)
 rmass = 0.067
-Vbarrier = 10 #eV
+Vbarrier = 0.25 #eV
 V0 = Vbarrier * 1.6*10**(-19) # en Joules
 q=-1.6*10**(-19) #Carga del electron en C
 
